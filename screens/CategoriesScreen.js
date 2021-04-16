@@ -1,21 +1,18 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  FlatList,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 import Colors from "../constants/Colors";
 import { CATEGORIES } from "../data/dummy-data";
+import CategoryGridTile from "../components/CategoryGridTile";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import HeaderButton from "../components/HeaderButton";
 
 const CategoriesScreen = (props) => {
   const renderGridItem = (itemData) => {
     return (
-      <TouchableOpacity
-        onPress={() => {
+      <CategoryGridTile
+        title={itemData.item.title}
+        color={itemData.item.color}
+        onSelect={() => {
           props.navigation.navigate({
             routeName: "CategoryMeals",
             params: {
@@ -23,11 +20,7 @@ const CategoriesScreen = (props) => {
             },
           });
         }}
-      >
-        <View style={styles.gridItem}>
-          <Text>{itemData.item.title}</Text>
-        </View>
-      </TouchableOpacity>
+      ></CategoryGridTile>
     );
   };
 
@@ -41,12 +34,21 @@ const CategoriesScreen = (props) => {
   );
 };
 
-CategoriesScreen.navigationOptions = {
-  headerTitle: "Meals Categories",
-  headerStyle: {
-    backgroundColor: Platform.OS === "android" ? Colors.primary : "white",
-  },
-  headerTintColor: Platform.OS === "android" ? "white" : Colors.primary,
+CategoriesScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: "Meals Categories",
+    headerLeft: (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Menu"
+          iconName="ios-menu"
+          onPress={() => {
+            navData.navigation.toggleDrawer();
+          }}
+        ></Item>
+      </HeaderButtons>
+    ),
+  };
 };
 
 const styles = StyleSheet.create({
@@ -54,11 +56,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  gridItem: {
-    flex: 1,
-    margin: 15,
-    height: 150,
   },
 });
 export default CategoriesScreen;
